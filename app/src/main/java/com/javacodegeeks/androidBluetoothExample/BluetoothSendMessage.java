@@ -139,6 +139,8 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
         }
     }
 
+    ///test
+
     @Override
     public synchronized void onPause() {
         super.onPause();
