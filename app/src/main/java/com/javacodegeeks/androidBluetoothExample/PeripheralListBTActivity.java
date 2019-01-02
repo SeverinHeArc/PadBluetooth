@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -34,6 +33,28 @@ public class PeripheralListBTActivity extends Activity {
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
 
+
+    // Key names received from the BluetoothGestionConnexion Handler
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
+
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE = 1;
+    private static final int REQUEST_ENABLE_BT = 2;
+
+    // Name of the connected device
+    private String mConnectedDeviceName = null;
+
+    // String buffer for outgoing messages
+    private StringBuffer mOutStringBuffer;
+
+    // Local Bluetooth adapter
+    private BluetoothAdapter mBluetoothAdapter = null;
+
+    // Member object for the chat services
+    private BluetoothGestionConnexion mChatService = null;
+    //
+
     /**
      * crée les tableaux pour les périphériques bluetooth et affiche leurs noms
      * et adresse
@@ -44,17 +65,21 @@ public class PeripheralListBTActivity extends Activity {
         super.onCreate(savedInstanceState);
         // Setup the window
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.device_list);
+        setContentView(R.layout.liste_bluetooth);
         // Set result CANCELED incase the user backs out
         setResult(Activity.RESULT_CANCELED);
+
         //bouton pour scanner devices
         Button scanButton = (Button) findViewById(R.id.button_scan);
         scanButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 doDiscovery();
                 v.setVisibility(View.GONE);
+
             }
         });
+
+
 
         //Un tableau pour les paired device et un pour les nouveaux
         mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_name);
@@ -147,6 +172,27 @@ public class PeripheralListBTActivity extends Activity {
             }
         }
     };
+
+
+    /**
+     * Rend notre appareil découvrable (visible)
+     * Connexion
+     */
+
+    public void connect(View v) {
+        Intent serverIntent = new Intent(this, PeripheralListBTActivity.class);
+        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+    }
+
+
+
+
+   /* @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Stop the Bluetooth chat services
+        if (mChatService != null) mChatService.stop();
+    }*/
 
     /**
      * se connecte à l'élement sélectionné

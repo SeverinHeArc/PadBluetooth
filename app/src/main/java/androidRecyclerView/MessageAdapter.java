@@ -12,7 +12,8 @@ import com.javacodegeeks.R;
 
 import java.util.List;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+public class MessageAdapter {
+        //extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
     private List<Message> messageList;
 
@@ -23,7 +24,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
      *Rend message visible et crée la cosmétique du message
      */
 
-    public MessageAdapter(Context context, List<Message> messages) {
+   /* public MessageAdapter(Context context, List<Message> messages) {
         messageList = messages;
     }
 
@@ -57,9 +58,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     }
 
-    /**
+    *//**
      * scroll
-     */
+     *//*
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.mTextView.setText(messageList.get(position).getMessage());
@@ -76,9 +77,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         return messageList.size();
     }
 
-    /**
+    *//**
      *Donne le nom de celui qui envoit le message
-     */
+     *//*
     @Override
     public int getItemViewType(int position) {
         Message message = messageList.get(position);
@@ -89,6 +90,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             return RECIPIENT;
         }
 
-    }
+    }*/
 
 }

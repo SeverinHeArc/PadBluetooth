@@ -5,7 +5,7 @@
     <string name="makeVisible">Make Bluetooth Visible</string>
     <string name="findDevices">Find Devices</string>
 
-    <!--  BluetoothSendMessage -->
+    <!--  MainActivity -->
     <string name="send">Send</string>
     <string name="not_connected">You are not connected to a device</string>
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving Bluetooth Chat.</string>

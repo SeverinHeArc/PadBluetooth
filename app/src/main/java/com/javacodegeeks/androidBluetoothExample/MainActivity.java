@@ -7,9 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.*;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,8 +29,7 @@ import androidRecyclerView.MessageAdapter;
  * Acivité qui envoit les messages (coordonnées par bluetooth)
  */
 
-public class BluetoothSendMessage extends Activity implements GestureDetector.OnGestureListener,
-        GestureDetector.OnDoubleTapListener{
+public class MainActivity extends Activity {
 
     // machine d'etat de la connexion
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -65,10 +62,10 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
     private BluetoothGestionConnexion mChatService = null;
 
     private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
-    private MessageAdapter mAdapter;
 
-    private GestureDetectorCompat mDetector;
+    private LinearLayoutManager mLayoutManager;
+    //private MessageAdapter mAdapter;
+
     public int counter = 0;
 
     private List<androidRecyclerView.Message> messageList = new ArrayList<androidRecyclerView.Message>();
@@ -88,21 +85,17 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        mDetector = new GestureDetectorCompat(this,this);
-        mDetector.setOnDoubleTapListener(this);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
+        //mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MessageAdapter(getBaseContext(), messageList);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        //mRecyclerView.setLayoutManager(mLayoutManager);
+        //mAdapter = new MessageAdapter(getBaseContext(), messageList);
+        //mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         mRecyclerView.setOnTouchListener(handleTouch);
-        mDetector = new GestureDetectorCompat(this,this);
-        mDetector.setOnDoubleTapListener(this);
 
         // test si le bluetooth est supporté par l'appareil
         if (mBluetoothAdapter == null) {
@@ -139,7 +132,6 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
         }
     }
 
-    ///test
 
     @Override
     public synchronized void onPause() {
@@ -175,16 +167,16 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
      */
 
     private void setupChat() {
-        mOutEditText = (EditText) findViewById(R.id.edit_text_out);
-        mOutEditText.setOnEditorActionListener(mWriteListener);
-        mSendButton = (Button) findViewById(R.id.button_send);
-        mSendButton.setOnClickListener(new OnClickListener() {
+       // mOutEditText = (EditText) findViewById(R.id.edit_text_out);
+        //mOutEditText.setOnEditorActionListener(mWriteListener);
+       // mSendButton = (Button) findViewById(R.id.button_send);
+       /* mSendButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 TextView view = (TextView) findViewById(R.id.edit_text_out);
                 String message = view.getText().toString();
                 sendMessage(message);
             }
-        });
+        });*/
 
         // Initialize the BluetoothGestionConnexion to perform bluetooth connections
         mChatService = new BluetoothGestionConnexion(this, mHandler);
@@ -209,7 +201,7 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
             mChatService.write(send);
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
+           // mOutEditText.setText(mOutStringBuffer);
         }
     }
 
@@ -219,7 +211,7 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
 
 
     // The action listener for the EditText widget, to listen for the return key
-    private TextView.OnEditorActionListener mWriteListener =
+   /* private TextView.OnEditorActionListener mWriteListener =
             new TextView.OnEditorActionListener() {
                 public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
                     // If the action is a key-up event on the return key, send the message
@@ -229,7 +221,7 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
                     }
                     return true;
                 }
-            };
+            };*/
 
     // The Handler that gets information back from the BluetoothGestionConnexion
     private final Handler mHandler = new Handler() {
@@ -241,14 +233,14 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
                     // construct a string from the buffer
 
                     String writeMessage = new String(writeBuf);
-                    mAdapter.notifyDataSetChanged();
+                    //mAdapter.notifyDataSetChanged();
                     messageList.add(new androidRecyclerView.Message(counter++, writeMessage, "Me"));
                     break;
                 case MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    mAdapter.notifyDataSetChanged();
+                    //mAdapter.notifyDataSetChanged();
                     messageList.add(new androidRecyclerView.Message(counter++, readMessage, mConnectedDeviceName));
                     break;
                 case MESSAGE_DEVICE_NAME:
@@ -307,43 +299,6 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
         ensureDiscoverable();
     }
 
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-        if (this.mDetector.onTouchEvent(event)){
-            return this.mDetector.onTouchEvent(event);
-        }
-        return super.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean onDoubleTap (MotionEvent motionEvent){
-        doubleTap = true;
-        return true;
-    }
-
-    @Override
-    public boolean onDoubleTapEvent (MotionEvent motionEvent){
-        doubleTap = true;
-        return true;
-    }
-
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent motionEvent) { return true; }
-            @Override
-            public boolean onDown(MotionEvent motionEvent) { return true; }
-            @Override
-            public void onShowPress(MotionEvent motionEvent) { }
-            @Override
-            public boolean onSingleTapUp(MotionEvent motionEvent) { return true; }
-            @Override
-            public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) { return true; }
-            @Override
-            public void onLongPress(MotionEvent motionEvent) { }
-            @Override
-            public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) { return true; }
-
-
     /**
      * This thread sends the position of finger to PC.
      */
@@ -390,17 +345,18 @@ public class BluetoothSendMessage extends Activity implements GestureDetector.On
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             String message;
+
             x = (int) event.getRawX();
             y = (int) event.getRawY();
-            String sClick;
-            if(doubleTap)
+            String sClick = "0";
+            /*if(doubleTap)
             {
                 sClick = "1";
             }
             else
             {
                 sClick = "0";
-            }
+            }*/
             message = ("X"+Integer.toString(x)+ "Y"+ Integer.toString(y)+"D"+Integer.toString(nbDoigts)+ "C" + sClick + "Z");
             sendMessage(message);
             int action = (event.getAction() & MotionEvent.ACTION_MASK);
