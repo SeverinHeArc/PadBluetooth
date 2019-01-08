@@ -8,28 +8,38 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.*;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.inputmethod.EditorInfo;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.javacodegeeks.R;
 
-import androidRecyclerView.MessageAdapter;
+import java.util.zip.ZipInputStream;
+import java.io.IOException;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
+
 
 /**
  * Acivité qui envoit les messages (coordonnées par bluetooth)
  */
 
 public class MainActivity extends Activity {
+
+    //test
+    private static int i = 0;
+    private Integer images[] = {R.drawable.zen,R.drawable.ana};
+    private ImageView imageView ;
+    private TextView textView;
+    private int sizebufferimage;
 
     // machine d'etat de la connexion
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -85,6 +95,9 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+        this.imageView = (ImageView) findViewById(R.id.imageView);
+        this.textView  = (TextView)  findViewById(R.id.textView);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         //mRecyclerView.setHasFixedSize(true);
@@ -238,10 +251,41 @@ public class MainActivity extends Activity {
                     break;
                 case MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    //mAdapter.notifyDataSetChanged();
-                    messageList.add(new androidRecyclerView.Message(counter++, readMessage, mConnectedDeviceName));
+
+                    if(i==1){
+
+                        sizebufferimage= readBuf[3] & 0xFF | (readBuf[2] & 0xFF) << 8 | (readBuf[1] & 0xFF) << 16 | (readBuf[0] & 0xFF) << 24;
+
+                        textView.setText(String.valueOf(sizebufferimage));
+                    }
+                    else if(i==2){
+                        byte[] bufferimage = new byte[sizebufferimage];
+                        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(readBuf));
+                        textView.setText(String.valueOf(readBuf));
+
+                        try {
+                            zis.read(bufferimage);
+                        }
+                        catch (IOException ex){
+                            Thread.currentThread().interrupt();
+                        }
+
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bufferimage, 0, bufferimage.length);
+                        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+                        imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp, imageView.getWidth(), imageView.getHeight(), false));
+
+
+                        //imageView.setImageResource(images[1]);
+
+                    }
+                    else {
+                        //imageView.setImageResource(images[0]);
+                        // construct a string from the valid bytes in the buffer
+                        String readMessage = new String(readBuf, 0, msg.arg1);
+                        //mAdapter.notifyDataSetChanged();
+                        messageList.add(new androidRecyclerView.Message(counter++, readMessage, mConnectedDeviceName));
+                    }
+                    i++;
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
