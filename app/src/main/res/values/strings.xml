@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidBluetoothExample</string>
+    <string name="app_name">Phone_Pad</string>
     <string name="toolbarTitle">Android Bluetooth Example</string>
     <string name="openbt">Open Bluetooth</string>
     <string name="makeVisible">Make Bluetooth Visible</string>

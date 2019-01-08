@@ -1,4 +1,4 @@
-package com.javacodegeeks.androidBluetoothExample;
+package com.javacodegeeks.phonePad;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -24,8 +24,6 @@ import com.javacodegeeks.R;
 
 import java.util.zip.ZipInputStream;
 import java.io.IOException;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap;
 
 
 /**
@@ -36,7 +34,7 @@ public class MainActivity extends Activity {
 
     //test
     private static int i = 0;
-    private Integer images[] = {R.drawable.zen,R.drawable.ana};
+    //private Integer images[] = {R.drawable.zen,R.drawable.ana};
     private ImageView imageView ;
     private TextView textView;
     private int sizebufferimage;
@@ -96,8 +94,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        this.imageView = (ImageView) findViewById(R.id.imageView);
-        this.textView  = (TextView)  findViewById(R.id.textView);
+       // this.imageView = (ImageView) findViewById(R.id.imageView);
+        //this.textView  = (TextView)  findViewById(R.id.textView);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         //mRecyclerView.setHasFixedSize(true);
@@ -256,12 +254,12 @@ public class MainActivity extends Activity {
 
                         sizebufferimage= readBuf[3] & 0xFF | (readBuf[2] & 0xFF) << 8 | (readBuf[1] & 0xFF) << 16 | (readBuf[0] & 0xFF) << 24;
 
-                        textView.setText(String.valueOf(sizebufferimage));
+                        //textView.setText(String.valueOf(sizebufferimage));
                     }
                     else if(i==2){
                         byte[] bufferimage = new byte[sizebufferimage];
                         ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(readBuf));
-                        textView.setText(String.valueOf(readBuf));
+                        //textView.setText(String.valueOf(readBuf));
 
                         try {
                             zis.read(bufferimage);
@@ -270,10 +268,10 @@ public class MainActivity extends Activity {
                             Thread.currentThread().interrupt();
                         }
 
-                        Bitmap bmp = BitmapFactory.decodeByteArray(bufferimage, 0, bufferimage.length);
+                        /*Bitmap bmp = BitmapFactory.decodeByteArray(bufferimage, 0, bufferimage.length);
                         ImageView imageView = (ImageView) findViewById(R.id.imageView);
                         imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp, imageView.getWidth(), imageView.getHeight(), false));
-
+*/
 
                         //imageView.setImageResource(images[1]);
 

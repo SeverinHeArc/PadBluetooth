@@ -1,4 +1,4 @@
-package com.javacodegeeks.androidBluetoothExample;
+package com.javacodegeeks.phonePad;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
